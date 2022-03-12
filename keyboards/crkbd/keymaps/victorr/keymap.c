@@ -38,28 +38,39 @@ enum layers {
     _left,
     _keypad,
     _function,
-    _hold,
     _debug,
     _blank
 };
 
 enum tapdancers {
-    T_BR = 0, // [, ]
-    T_PA, // (, )
-    T_CU, // {, }
-    T_SL, // slash, backslash
-    T_COMM, // comma, dash
+    /* T_BR = 0, // [, ] */
+    /* T_PA, // (, ) */
+    /* T_CU, // {, } */
+    T_SLSH, // slash, backslash
+    T_SLSH_BROKEN, // slash, backslash
+    T_COMM, // dash, comma
+    T_DOT,  // dot,  colon
+    T_QUOT, // quote, back quote
 };
 
 // Tap Dance Definitions
 //
-qk_tap_dance_action_t tap_dance_actions[] = {
-    [T_BR] = ACTION_TAP_DANCE_DOUBLE(KC_LBRC, KC_RBRC),
-    [T_PA] = ACTION_TAP_DANCE_DOUBLE(KC_LPRN, KC_RPRN),
-    [T_CU] = ACTION_TAP_DANCE_DOUBLE(KC_LCBR, KC_RCBR),
-    [T_SL] = ACTION_TAP_DANCE_DOUBLE(KC_SLSH, KC_BSLS),
 
-    [T_COMM] = ACTION_TAP_DANCE_DOUBLE(KC_COMM, KC_MINS)
+void td_slash_each(qk_tap_dance_state_t *state, void *user_data);
+void td_slash_finish(qk_tap_dance_state_t *state, void *user_data);
+void td_slash_reset(qk_tap_dance_state_t *state, void *user_data);
+
+qk_tap_dance_action_t tap_dance_actions[] = {
+    /* [T_BR] = ACTION_TAP_DANCE_DOUBLE(KC_LBRC, KC_RBRC), */
+    /* [T_PA] = ACTION_TAP_DANCE_DOUBLE(KC_LPRN, KC_RPRN), */
+    /* [T_CU] = ACTION_TAP_DANCE_DOUBLE(KC_LCBR, KC_RCBR), */
+    /* [T_SLSH] = ACTION_TAP_DANCE_DOUBLE(KC_SLSH, KC_BSLS), */
+
+    [T_COMM] = ACTION_TAP_DANCE_DOUBLE(KC_COMM, KC_MINS),
+    [T_DOT] =  ACTION_TAP_DANCE_DOUBLE(KC_DOT, KC_SCLN),
+    // [T_SLSH_BROKEN] = ACTION_TAP_DANCE_DOUBLE(KC_SLSH, KC_BSLS), // Breaks repeated C-backslash
+    [T_SLSH] = ACTION_TAP_DANCE_FN_ADVANCED(td_slash_each, td_slash_finish, td_slash_reset),
+    [T_QUOT] = ACTION_TAP_DANCE_DOUBLE(KC_QUOT, KC_GRV),
 };
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
@@ -69,15 +80,15 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 ////////////////////////////////////////////////////////////////////////////////
 
 [_default] = LAYOUT_split_3x6_3(
-KC_TAB,         KC_Q,  KC_W,  KC_F,  KC_P,  KC_G,  /**/  KC_J,  KC_L,  KC_U,        KC_Y,    KC_SCLN,  XXXXXXX,
-ctrlT(KC_ESC),  KC_A,  KC_R,  KC_S,  KC_T,  KC_D,  /**/  KC_H,  KC_N,  KC_E,        KC_I,    KC_O,     KC_QUOT,
-KC_LSPO,        KC_Z,  KC_X,  KC_C,  KC_V,  KC_B,  /**/  KC_K,  KC_M,  TD(T_COMM),  KC_DOT,  KC_SLSH, KC_RSPC,
+KC_TAB,         KC_Q,  KC_W,  KC_F,  KC_P,  KC_G,  /**/  KC_J,  KC_L,  KC_U,        KC_Y,    KC_EQL,  TD(T_SLSH_BROKEN),
+ctrlT(KC_ESC),  KC_A,  KC_R,  KC_S,  KC_T,  KC_D,  /**/  KC_H,  KC_N,  KC_E,        KC_I,    KC_O,     TD(T_QUOT),
+KC_LSPO,        KC_Z,  KC_X,  KC_C,  KC_V,  KC_B,  /**/  KC_K,  KC_M,  TD(T_COMM),  TD(T_DOT),  TD(T_SLSH),  KC_RSPC,
 
-KC_LGUI, OSL(_left),  altT(KC_ENT),    altT(KC_SPC), OSL(_right), KC_RGUI // TO(_debug),
+KC_LGUI, OSL(_right),  altT(KC_ENT),    altT(KC_SPC), OSL(_left), KC_RGUI // TO(_debug),,
 ),
 
 ////////////////////////////////////////////////////////////////////////////////
-// QUICK
+// RIGHT
 ////////////////////////////////////////////////////////////////////////////////
 
 [_right] = LAYOUT_split_3x6_3(
@@ -91,7 +102,7 @@ _______,  _______,  KC_MINS,  /**/  KC_MINS,  _______,  _______
 ),
 
 ////////////////////////////////////////////////////////////////////////////////
-// NAVIGATION
+// LEFT
 ////////////////////////////////////////////////////////////////////////////////
 
 [_left] = LAYOUT_split_3x6_3(
@@ -109,9 +120,9 @@ _______,  _______,  _______,  /**/      _______,  _______,  _______
 
 [_keypad] =
 LAYOUT_split_3x6_3(
-XXXXXXX,  XXXXXXX,  XXXXXXX,  OSL(_function),  XXXXXXX,  XXXXXXX,  /**/  KC_COLN,    KC_P7,  KC_P8,  KC_P9,  KC_KP_PLUS,      TO(_default),
-XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,         XXXXXXX,  TO(_keypad),  /**/  KC_KP_DOT,  KC_P4,  KC_P5,  KC_P6,  KC_KP_MINUS,     KC_KP_SLASH,
-XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,         XXXXXXX,  XXXXXXX,  /**/  KC_P0,      KC_P1,  KC_P2,  KC_P3,  KC_KP_ASTERISK,  KC_KP_ENTER,
+XXXXXXX,  XXXXXXX,  XXXXXXX,  OSL(_function),  XXXXXXX,  XXXXXXX,     /**/  KC_COLN,    KC_P7,  KC_P8,  KC_P9,  KC_KP_PLUS,      TO(_default),
+XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,         XXXXXXX,  TO(_keypad), /**/  KC_KP_DOT,  KC_P4,  KC_P5,  KC_P6,  KC_KP_MINUS,     KC_KP_SLASH,
+XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,         XXXXXXX,  XXXXXXX,     /**/  KC_P0,      KC_P1,  KC_P2,  KC_P3,  KC_KP_ASTERISK,  KC_KP_ENTER,
 
 XXXXXXX,  _______,  XXXXXXX,  /**/  XXXXXXX,  _______,  XXXXXXX
 ),
@@ -122,9 +133,9 @@ XXXXXXX,  _______,  XXXXXXX,  /**/  XXXXXXX,  _______,  XXXXXXX
 
 [_function] =
 LAYOUT_split_3x6_3(
-XXXXXXX,        XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  /**/     KC_F12,  KC_F7,  KC_F8,  KC_F9,  XXXXXXX,  TO(_default),
-ctrlT(KC_ESC),  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  TO(_function),  /**/     KC_F11,  KC_F4,  KC_F5,  KC_F6,  XXXXXXX,  XXXXXXX,
-KC_LSFT,        XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  /**/     KC_F10,  KC_F1,  KC_F2,  KC_F3,  XXXXXXX,  XXXXXXX,
+XXXXXXX,        XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,       /**/     KC_F12,  KC_F7,  KC_F8,  KC_F9,  XXXXXXX,  TO(_default),
+ctrlT(KC_ESC),  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  TO(_function), /**/     KC_F11,  KC_F4,  KC_F5,  KC_F6,  XXXXXXX,  XXXXXXX,
+KC_LSFT,        XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,       /**/     KC_F10,  KC_F1,  KC_F2,  KC_F3,  XXXXXXX,  XXXXXXX,
 
 KC_LGUI,  _______,  KC_LALT,  /**/  XXXXXXX,  _______,  XXXXXXX
 ),
@@ -135,18 +146,11 @@ KC_LGUI,  _______,  KC_LALT,  /**/  XXXXXXX,  _______,  XXXXXXX
   if v, ok rx;={[;=;={[;=;=rx;=;=;=;r{}]{}};{;{;{{}{}{}arx;:riestnrse:rnsietrs:;nrstiet;:'
 
   2002  2020 2022-03-09
-  [_right] = LAYOUT_split_6_()  bbbb bbbbbbb200200    bb bbb bbb
+i  [_right] = LAYOUT_split_6_()  bbbb bbbbbbb200200    bb bbb bbb
  */
 
 // tap dance does not work with OSL
 //}{}   {{c{c
-
-[_hold] = LAYOUT_split_3x6_3(
-XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  TD(T_PA),  KC_G,  /**/  XXXXXXX,  XXXXXXX,  KC_UNDS,  XXXXXXX,  XXXXXXX,  TO(_default),
-XXXXXXX,  XXXXXXX,  XXXXXXX,  TD(T_SL),  XXXXXXX,  KC_MINS,  /**/  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,
-XXXXXXX,  XXXXXXX,  XXXXXXX,  TD(T_CU),  XXXXXXX,  TD(T_BR),  /**/  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,
-XXXXXXX,  XXXXXXX,  XXXXXXX,  /**/  XXXXXXX,  XXXXXXX,  XXXXXXX
-),
 
 [_debug] = LAYOUT_split_3x6_3(
   XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  /**/  XXXXXXX,  DT_UP,     XXXXXXX,  XXXXXXX,  XXXXXXX,  TO(_default),
@@ -191,3 +195,65 @@ void matrix_scan_user(void) {
 }
 
 */
+
+char * char_repeat( int n, char c ) {
+    char * dest = malloc(n+1);
+    memset(dest, c, n);
+    dest[n] = '\0';
+    return dest;
+}
+
+// T_SLSH
+//   * C-/
+//   1 / 2 \ 3 //
+void td_slash_each(qk_tap_dance_state_t *state, void *user_data) {
+    /* if(state->pressed) */
+    /*     return; */
+    if(state->weak_mods & MOD_MASK_CTRL) {
+        register_code(KC_SLSH);
+        unregister_code(KC_SLSH);
+        state->finished = true;
+        // unregister_code(KC_LCTL);
+        // SEND_STRING("undo\n");
+        // there will be no call to finished
+    }
+    else if(state->count == 3) {
+        register_code16(KC_SLSH); unregister_code16(KC_SLSH);
+        register_code16(KC_SLSH); unregister_code16(KC_SLSH);
+        state->finished = true;
+        // SEND_STRING("3 taps\n");
+        // there will be no call to finish
+    }
+    // SEND_STRING("each ignoring\n");
+
+    /*
+    SEND_STRING(" each \n");
+    if(state->oneshot_mods & MOD_MASK_SHIFT) {
+        SEND_STRING(" *one shot control* \n");
+    }
+    if(state->weak_mods & MOD_MASK_SHIFT) {
+        SEND_STRING(" *weak control* \n");
+    }
+    if(get_mods() & MOD_MASK_SHIFT) {
+        SEND_STRING(" *get_mods control* \n");
+    }
+    */
+}
+void td_slash_finish(qk_tap_dance_state_t *state, void *user_data) {
+    switch(state->count) {
+    case 1:
+        register_code16(KC_SLSH); unregister_code16(KC_SLSH);
+        // SEND_STRING("finish 1\n");
+        break;
+    case 2:
+        register_code16(KC_BSLS); unregister_code16(KC_BSLS);
+        // SEND_STRING("finish 2\n");
+        break;
+    }
+    // for(int i = 0; i<state->count; i++)
+    //     SEND_STRING("o");
+    // SEND_STRING("\n");
+}
+void td_slash_reset(qk_tap_dance_state_t *state, void *user_data) {
+    // SEND_STRING("reset\n");
+}
