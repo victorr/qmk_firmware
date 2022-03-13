@@ -141,15 +141,6 @@ KC_LSFT,        XXXXXXX,  XXXXXXX,  XXXXXXX,        XXXXXXX,  XXXXXXX,   /**/   
 KC_LGUI,  _______,  KC_LALT,  /**/  XXXXXXX,  _______,  XXXXXXX
 ),
 
-// test   !=!==!=  ==!=!=!=
-/*2NNrstpppp    \|    ls -1 |1211355iin12354654:
-  300300300300300:=;ientsier;nreistnierstn;resti rt rest     rsntirnst;neirnstienisr:= rnsterisnt{}  []  #$^@!:!z
-  if v, ok rx;={[;=;={[;=;=rx;=;=;=;r{}]{}};{;{;{{}{}{}arx;:riestnrse:rnsietrs:;nrstiet;:'
-
-  2002  2020 2022-03-09
-i  [_right] = LAYOUT_split_6_()  bbbb bbbbbbb200200    bb bbb bbb
- */
-
 // tap dance does not work with OSL
 //}{}   {{c{c
 
