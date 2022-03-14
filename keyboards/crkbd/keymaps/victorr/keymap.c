@@ -58,6 +58,7 @@ enum layers {
     _navigation,
     _mouse,
     _goland,
+    _gmail,
     _debug,
     _blank
 };
@@ -115,9 +116,9 @@ KC_LGUI, OSL(_right),  altT(KC_ENT),  /**/  altT(KC_SPC), OSL(_left), KC_RGUI //
 ////////////////////////////////////////////////////////////////////////////////
 
 [_right] = LAYOUT_split_3x6_3(
-_______,  XXXXXXX,     XXXXXXX,  OSL(_function),  XXXXXXX,     OSL(_goland),  /**/  KC_AMPR,  KC_7,  KC_8,  KC_9,  KC_EQL,      TO(_default),
-KC_LCTL,  TO(_mouse),  XXXXXXX,  XXXXXXX,         TO(_navigation),  XXXXXXX,  /**/  KC_ASTR,  KC_4,  KC_5,  KC_6,  KC_CIRC,     _______,
-_______,  XXXXXXX,     XXXXXXX,  XXXXXXX,         XXXXXXX,          XXXXXXX,  /**/  KC_0,     KC_1,  KC_2,  KC_3,  TO(_right),  _______,
+_______, XXXXXXX,    XXXXXXX, OSL(_function), XXXXXXX,         OSL(_goland),  /**/  KC_AMPR,  KC_7,  KC_8,  KC_9,  KC_EQL,      TO(_default),
+KC_LCTL, TO(_mouse), XXXXXXX, XXXXXXX,        TO(_navigation), TO(_gmail),    /**/  KC_ASTR,  KC_4,  KC_5,  KC_6,  KC_CIRC,     _______,
+_______, XXXXXXX,    XXXXXXX, XXXXXXX,        XXXXXXX,         XXXXXXX,       /**/  KC_0,     KC_1,  KC_2,  KC_3,  TO(_right),  _______,
 
 _______,  _______,  KC_LALT,  /**/  _______,  _______,  _______
 ),
@@ -129,7 +130,7 @@ _______,  _______,  KC_LALT,  /**/  _______,  _______,  _______
 [_left] = LAYOUT_split_3x6_3(
 // ! @ # $ %
 KC_GRV,   KC_EXLM,  KC_AT,    KC_HASH,  KC_DLR,   KC_PERC,     /**/      XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  TO(_default),
-KC_LCTL,  XXXXXXX,  KC_LPRN,  KC_DQUO,  KC_RPRN,  KC_LBRC,     /**/      XXXXXXX,  KC_EXLM,  KC_COLN,  KC_EQL,   XXXXXXX,  _______,
+KC_LCTL,  KC_ESC,  KC_LPRN,  KC_DQUO,  KC_RPRN,  KC_LBRC,     /**/      XXXXXXX,  KC_EXLM,  KC_COLN,  KC_EQL,   XXXXXXX,  _______,
 KC_LSFT,  XXXXXXX,  XXXXXXX,  KC_LCBR,  KC_RCBR,  KC_RBRC,     /**/      XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  _______,
 
 _______,  _______,  _______,  /**/      _______,  _______,  _______
@@ -188,6 +189,14 @@ _______,  _______,  _______,  /**/      _______,  _______,  _______
 XXXXXXX,  XXXXXXX,  XXXXXXX,    XXXXXXX,  XXXXXXX,  TO(_goland),  /**/  XXXXXXX,  XXXXXXX,  goUsages,   XXXXXXX,    XXXXXXX,   TO(_default),
 XXXXXXX,  XXXXXXX,  goRename,   XXXXXXX,  XXXXXXX,  XXXXXXX,      /**/  goCalls,  goStepIn, goStepOver, goStepOut,  goResume,  goReset,
 XXXXXXX,  XXXXXXX,  goRun,      goDebug,  XXXXXXX,  XXXXXXX,      /**/  XXXXXXX,  XXXXXXX,  XXXXXXX,    XXXXXXX,    XXXXXXX,   XXXXXXX,
+_______,  _______,  _______,  /**/      _______,  _______,  _______
+),
+
+
+[_gmail] = LAYOUT_split_3x6_3(
+XXXXXXX,  KC_EXLM,  XXXXXXX,  KC_HASH,  XXXXXXX,  XXXXXXX,  /**/  KC_E,     KC_U,     KC_I,     KC_O,     XXXXXXX,  TO(_default),
+XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  /**/  KC_H,     KC_J,     KC_K,     KC_L,     XXXXXXX,  XXXXXXX,
+XXXXXXX,  KC_Z,     KC_X,     XXXXXXX,  XXXXXXX,  XXXXXXX,  /**/  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,
 _______,  _______,  _______,  /**/      _______,  _______,  _______
 ),
 
