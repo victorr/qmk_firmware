@@ -21,7 +21,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "tapdance.c"
 
-#define altT(x)    LALT_T(x)
+#define altT(x)   LALT_T(x)
 #define shiftT(x) LSFT_T(x)
 #define ctrlT(x)  LCTL_T(x)
 
@@ -34,6 +34,19 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define PREVTAB S(KC_TAB)
 #define NEXTTAB KC_TAB
 
+#define goRename S(KC_F6)
+#define goCalls  C(A(KC_H))
+#define goUsages A(KC_F7)
+#define goRun    S(KC_F10)
+#define goDebug  S(KC_F9)
+#define goStepIn   KC_F7
+#define goStepOver KC_F8
+#define goStepOut  S(KC_F8)
+#define goResume   KC_F9
+#define goReset    C(KC_F2)
+#define go
+
+
 enum layers {
     _default = 0,
     _right,
@@ -42,6 +55,9 @@ enum layers {
     _leftL,
     _keypad,
     _function,
+    _navigation,
+    _mouse,
+    _goland,
     _debug,
     _blank
 };
@@ -55,6 +71,7 @@ enum tapdancers {
     T_COMM, // dash, comma
     T_DOT,  // dot,  colon
     T_QUOT, // quote, back quote
+    T_Z,
     T_DEBUG,
 };
 
@@ -72,6 +89,8 @@ qk_tap_dance_action_t tap_dance_actions[] = {
     // [T_SLSH_BROKEN] = ACTION_TAP_DANCE_DOUBLE(KC_SLSH, KC_BSLS), // Breaks repeated C-backslash
     [T_SLSH] = ACTION_TAP_DANCE_FN_ADVANCED(td_slash_each, td_slash_finished, td_slash_reset),
     [T_QUOT] = ACTION_TAP_DANCE_DOUBLE(KC_QUOT, KC_GRV),
+    [T_Z] = ACTION_TAP_DANCE_DOUBLE(KC_Z, KC_TILDE),
+
     [T_DEBUG] = ACTION_TAP_DANCE_FN_ADVANCED(td_debug_each, td_debug_finished, td_debug_reset),
 };
 
@@ -83,9 +102,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 /*ctrlT(KC_ESC)*/
 
 [_default] = LAYOUT_split_3x6_3(
-KC_TAB,         KC_Q,  KC_W,  KC_F,  KC_P,  KC_G,  /**/  KC_J,  KC_L,  KC_U,        KC_Y,       KC_EQL,      KC_ESC,
-OSM(MOD_LCTL),  KC_A,  KC_R,  KC_S,  KC_T,  KC_D,  /**/  KC_H,  KC_N,  KC_E,        KC_I,       KC_O,        TD(T_QUOT),
-KC_LSFT,        KC_Z,  KC_X,  KC_C,  KC_V,  KC_B,  /**/  KC_K,  KC_M,  TD(T_COMM),  TD(T_DOT),  TD(T_SLSH),  KC_RSFT,
+KC_TAB,         KC_Q,     KC_W,  KC_F,  KC_P,  KC_G,  /**/  KC_J,  KC_L,  KC_U,        KC_Y,       KC_EQL,      KC_ESC,
+OSM(MOD_LCTL),  KC_A,     KC_R,  KC_S,  KC_T,  KC_D,  /**/  KC_H,  KC_N,  KC_E,        KC_I,       KC_O,        TD(T_QUOT),
+KC_LSFT,        TD(T_Z),  KC_X,  KC_C,  KC_V,  KC_B,  /**/  KC_K,  KC_M,  TD(T_COMM),  TD(T_DOT),  TD(T_SLSH),  KC_RSFT,
 
 KC_LGUI, OSL(_right),  altT(KC_ENT),  /**/  altT(KC_SPC), OSL(_left), KC_RGUI // TO(_debug),,
 ),
@@ -95,9 +114,9 @@ KC_LGUI, OSL(_right),  altT(KC_ENT),  /**/  altT(KC_SPC), OSL(_left), KC_RGUI //
 ////////////////////////////////////////////////////////////////////////////////
 
 [_right] = LAYOUT_split_3x6_3(
-_______,  XXXXXXX,  XXXXXXX,  OSL(_function),  XXXXXXX,  XXXXXXX,  /**/  KC_CIRC,  KC_7,  KC_8,  KC_9,  KC_EQL,      TO(_default),
-KC_LCTL,  XXXXXXX,  XXXXXXX,  XXXXXXX,         XXXXXXX,  XXXXXXX,  /**/  KC_AMPR,  KC_4,  KC_5,  KC_6,  XXXXXXX,     _______,
-_______,  XXXXXXX,  XXXXXXX,  XXXXXXX,         XXXXXXX,  XXXXXXX,  /**/  KC_0,     KC_1,  KC_2,  KC_3,  TO(_right),  _______,
+_______,  XXXXXXX,     XXXXXXX,  OSL(_function),  XXXXXXX,     OSL(_goland),  /**/  KC_AMPR,  KC_7,  KC_8,  KC_9,  KC_EQL,      TO(_default),
+KC_LCTL,  TO(_mouse),  XXXXXXX,  XXXXXXX,         TO(_navigation),  XXXXXXX,  /**/  KC_ASTR,  KC_4,  KC_5,  KC_6,  KC_CIRC,     _______,
+_______,  XXXXXXX,     XXXXXXX,  XXXXXXX,         XXXXXXX,          XXXXXXX,  /**/  KC_0,     KC_1,  KC_2,  KC_3,  TO(_right),  _______,
 
 _______,  _______,  KC_LALT,  /**/  _______,  _______,  _______
 ),
@@ -108,9 +127,9 @@ _______,  _______,  KC_LALT,  /**/  _______,  _______,  _______
 
 [_left] = LAYOUT_split_3x6_3(
 // ! @ # $ %
-_______,  KC_EXLM,  KC_AT,    KC_HASH,  KC_DLR,   KC_PERC,     /**/      XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  TO(_default),
-KC_LCTL,  XXXXXXX,  KC_LBRC,  KC_LPRN,  KC_RPRN,  KC_RBRC,     /**/      XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  _______,
-KC_LSFT,  XXXXXXX,  XXXXXXX,  KC_LCBR,  KC_RCBR,  XXXXXXX,     /**/      XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  _______,
+KC_GRV,   KC_EXLM,  KC_AT,    KC_HASH,  KC_DLR,   KC_PERC,     /**/      XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  TO(_default),
+KC_LCTL,  XXXXXXX,  KC_LPRN,  KC_DQUO,  KC_RPRN,  KC_LBRC,     /**/      XXXXXXX,  KC_EXLM,  KC_COLN,  KC_EQL,   XXXXXXX,  _______,
+KC_LSFT,  XXXXXXX,  XXXXXXX,  KC_LCBR,  KC_RCBR,  KC_RBRC,     /**/      XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  _______,
 
 _______,  _______,  _______,  /**/      _______,  _______,  _______
 ),
@@ -141,6 +160,37 @@ KC_LSFT,        XXXXXXX,  XXXXXXX,  XXXXXXX,        XXXXXXX,  XXXXXXX,   /**/   
 KC_LGUI,  _______,  KC_LALT,  /**/  XXXXXXX,  _______,  XXXXXXX
 ),
 
+// L R P D
+// page up page down
+// home end
+// C-tab C-S-tab
+// G-[ G-]
+[_navigation] = LAYOUT_split_3x6_3(
+XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  /**/  KC_HOME,  KC_END,   KC_PGUP,  XXXXXXX,  XXXXXXX,  TO(_default),
+XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  /**/  KC_LEFT,  KC_DOWN,  KC_UP,    KC_RGHT,  XXXXXXX,  XXXXXXX,
+XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  /**/  XXXXXXX,  XXXXXXX,  KC_PGDN,  XXXXXXX,  XXXXXXX,  XXXXXXX,
+_______,  _______,  _______,  /**/      _______,  _______,  _______
+),
+
+
+[_mouse] = LAYOUT_split_3x6_3(
+TO(_default),  XXXXXXX,  G(KC_W),  XXXXXXX,  XXXXXXX,  KC_BSPC,  /**/  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  TO(_default),
+XXXXXXX,       XXXXXXX,  XXXXXXX,  KC_SPC,   XXXXXXX,  XXXXXXX,  /**/  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,
+XXXXXXX,       UNDO,     CUT,      COPY,     PASTE,    XXXXXXX,  /**/  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,
+_______,  _______,  _______,  /**/      _______,  _______,  _______
+),
+
+// GoLand
+// rename run debug call-hirarchy find usages
+// step-in step-out step-over
+[_goland] = LAYOUT_split_3x6_3(
+XXXXXXX,  XXXXXXX,  XXXXXXX,    XXXXXXX,  XXXXXXX,  TO(_goland),  /**/  XXXXXXX,  XXXXXXX,  goUsages,   XXXXXXX,    XXXXXXX,   TO(_default),
+XXXXXXX,  XXXXXXX,  goRename,   XXXXXXX,  XXXXXXX,  XXXXXXX,      /**/  goCalls,  goStepIn, goStepOver, goStepOut,  goResume,  goReset,
+XXXXXXX,  XXXXXXX,  goRun,      goDebug,  XXXXXXX,  XXXXXXX,      /**/  XXXXXXX,  XXXXXXX,  XXXXXXX,    XXXXXXX,    XXXXXXX,   XXXXXXX,
+_______,  _______,  _______,  /**/      _______,  _______,  _______
+),
+
+
 // tap dance does not work with OSL
 //}{}   {{c{c
 
@@ -156,7 +206,7 @@ KC_LGUI,  _______,  KC_LALT,  /**/  XXXXXXX,  _______,  XXXXXXX
   XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  /**/  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  TO(_default),
   XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  /**/  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,
   XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  /**/  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,
-  XXXXXXX,  XXXXXXX,  XXXXXXX,  /**/  XXXXXXX,  XXXXXXX,  XXXXXXX
+  _______,  _______,  _______,  /**/      _______,  _______,  _______
  ),
 };
 
