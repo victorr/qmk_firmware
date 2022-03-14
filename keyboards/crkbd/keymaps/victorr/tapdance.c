@@ -1,42 +1,46 @@
 
 
 #pragma once
+// , - --
+void td_commadash_each(qk_tap_dance_state_t *state, void *user_data) {
+    if(state->weak_mods & MOD_MASK_GUI) {
+        // send CMD-, immediately
+        tap_code(KC_COMM);
+        state->finished = true;
+    }
+    else if(state->count > 2) {
+        tap_code(KC_MINS);
+    }
+}
+
+void td_commadash_finished(qk_tap_dance_state_t *state, void *user_data) {
+    if(state->count == 1)
+        tap_code(KC_COMM);
+    else
+        tap_code(KC_MINS);
+}
+
+void td_commadash_reset(qk_tap_dance_state_t *state, void *user_data) {
+}
 
 // T_SLSH
 //   * C-/
 //   1 / 2 \ 3 //
 void td_slash_each(qk_tap_dance_state_t *state, void *user_data) {
-    /* if(state->pressed) */
-    /*     return; */
     if(state->weak_mods & MOD_MASK_CTRL) {
-        register_code(KC_SLSH);
-        unregister_code(KC_SLSH);
+        tap_code(KC_SLSH);
         state->finished = true;
-        // unregister_code(KC_LCTL);
-        // SEND_STRING("undo\n");
-        // there will be no call to finished
     }
-    else if(state->count == 3) {
-        register_code16(KC_SLSH); unregister_code16(KC_SLSH);
-        register_code16(KC_SLSH); unregister_code16(KC_SLSH);
-        state->finished = true;
-        // SEND_STRING("3 taps\n");
-        // there will be no call to finish
+    else if(state->count > 2) {
+        tap_code16(KC_SLSH);
     }
-    // SEND_STRING("each ignoring\n");
 }
 
 void td_slash_finished(qk_tap_dance_state_t *state, void *user_data) {
-    switch(state->count) {
-    case 1:
-        register_code16(KC_SLSH); unregister_code16(KC_SLSH);
-        // SEND_STRING("finish 1\n");
-        break;
-    case 2:
-        register_code16(KC_BSLS); unregister_code16(KC_BSLS);
-        // SEND_STRING("finish 2\n");
-        break;
-    }
+    if(state->count == 2)
+        tap_code16(KC_BSLS);
+    else
+        tap_code16(KC_SLSH);
 }
 
 void td_slash_reset(qk_tap_dance_state_t *state, void *user_data) {

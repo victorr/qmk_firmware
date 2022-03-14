@@ -84,7 +84,8 @@ qk_tap_dance_action_t tap_dance_actions[] = {
     /* [T_CU] = ACTION_TAP_DANCE_DOUBLE(KC_LCBR, KC_RCBR), */
     /* [T_SLSH] = ACTION_TAP_DANCE_DOUBLE(KC_SLSH, KC_BSLS), */
 
-    [T_COMM] = ACTION_TAP_DANCE_DOUBLE(KC_COMM, KC_MINS),
+    // [T_COMM] = ACTION_TAP_DANCE_DOUBLE(KC_COMM, KC_MINS),
+    [T_COMM] = ACTION_TAP_DANCE_FN_ADVANCED(td_commadash_each, td_commadash_finished, td_commadash_reset),
     [T_DOT] =  ACTION_TAP_DANCE_DOUBLE(KC_DOT, KC_SCLN),
     // [T_SLSH_BROKEN] = ACTION_TAP_DANCE_DOUBLE(KC_SLSH, KC_BSLS), // Breaks repeated C-backslash
     [T_SLSH] = ACTION_TAP_DANCE_FN_ADVANCED(td_slash_each, td_slash_finished, td_slash_reset),
