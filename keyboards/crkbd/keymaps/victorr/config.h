@@ -28,8 +28,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // #define MASTER_RIGHT
 // #define EE_HANDS
 
-#define TAPPING_FORCE_HOLD // https://docs.qmk.fm/#/tap_hold?id=tapping-force-hold
-//#define TAPPING_TERM 100
+// TAPPING_FORCE_HOLD fixes C-space + space typed quickly
+// https://docs.qmk.fm/#/tap_hold?id=tapping-force-hold
+#define TAPPING_FORCE_HOLD
+
+// IGNORE_MOD_TAP_INTERRUPT_PER_KEY fixes ALT_T(KC_SPC) selecting
+// ALT rather than space too often.
+#define IGNORE_MOD_TAP_INTERRUPT_PER_KEY
+
+#define TAPPING_TERM 200
 
 #ifdef RGBLIGHT_ENABLE
     #define RGBLIGHT_EFFECT_BREATHING
@@ -54,6 +61,3 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // #define LEADER_NO_TIMEOUT
 // #define LEADER_PER_KEY_TIMING
 // #define LEADER_TIMEOUT 0
-
-// tap dance
-#define TAPPING_TERM 175
