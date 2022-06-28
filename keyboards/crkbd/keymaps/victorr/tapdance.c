@@ -1,6 +1,33 @@
 
 
 #pragma once
+// . ; ..
+void td_dotsemicolon_each(qk_tap_dance_state_t *state, void *user_data) {
+    // if(state->weak_mods & MOD_MASK_CTRL) {
+    //     // send CMD-. immediately
+    //     tap_code(KC_DOT);
+    //     state->finished = true;
+    // }
+    // else {
+        switch(state->count) {
+        case 1:
+            tap_code(KC_DOT);
+            break;
+        case 2:
+            tap_code(KC_BSPC);
+            tap_code(KC_SCLN);
+            break;
+        case 3:
+            tap_code(KC_BSPC);
+            tap_code(KC_DOT);
+            tap_code(KC_DOT);
+            break;
+        default:
+            tap_code(KC_DOT);
+        }
+    // }
+}
+
 // , - --
 void td_commadash_each(qk_tap_dance_state_t *state, void *user_data) {
     if(state->weak_mods & MOD_MASK_GUI) {
@@ -8,16 +35,28 @@ void td_commadash_each(qk_tap_dance_state_t *state, void *user_data) {
         tap_code(KC_COMM);
         state->finished = true;
     }
-    else if(state->count > 2) {
-        tap_code(KC_MINS);
+    else {
+        switch(state->count) {
+        case 1:
+            tap_code(KC_COMM);
+            break;
+        case 2:
+            tap_code(KC_BSPC);
+            tap_code(KC_MINS);
+            // SEND_STRING("\ncase 2\n");
+            break;
+        default:
+            tap_code(KC_MINS);
+            //SEND_STRING("\ndefault\n");
+        }
     }
 }
 
 void td_commadash_finished(qk_tap_dance_state_t *state, void *user_data) {
-    if(state->count == 1)
-        tap_code(KC_COMM);
-    else
-        tap_code(KC_MINS);
+    // if(state->count > 2) {
+    //     tap_code(KC_MINS);
+    //     SEND_STRING("\nfinished\n");
+    // }
 }
 
 void td_commadash_reset(qk_tap_dance_state_t *state, void *user_data) {
@@ -31,16 +70,31 @@ void td_slash_each(qk_tap_dance_state_t *state, void *user_data) {
         tap_code(KC_SLSH);
         state->finished = true;
     }
-    else if(state->count > 2) {
-        tap_code16(KC_SLSH);
+    else {
+        switch(state->count) {
+        case 1:
+            tap_code(KC_SLSH);
+            break;
+        case 2:
+            tap_code(KC_BSPC);
+            tap_code(KC_BSLS);
+            break;
+        case 3:
+            tap_code(KC_BSPC);
+            tap_code(KC_SLSH);
+            tap_code(KC_SLSH);
+            break;
+        default:
+            tap_code(KC_SLSH);
+        }
     }
 }
 
 void td_slash_finished(qk_tap_dance_state_t *state, void *user_data) {
-    if(state->count == 2)
-        tap_code16(KC_BSLS);
-    else
-        tap_code16(KC_SLSH);
+    if(state->count == 3) {
+        // Probably typing a // comment
+        tap_code16(KC_SPC);
+    }
 }
 
 void td_slash_reset(qk_tap_dance_state_t *state, void *user_data) {

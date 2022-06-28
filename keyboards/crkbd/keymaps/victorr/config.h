@@ -34,8 +34,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 // IGNORE_MOD_TAP_INTERRUPT_PER_KEY fixes ALT_T(KC_SPC) selecting
 // ALT rather than space too often.
-#define IGNORE_MOD_TAP_INTERRUPT_PER_KEY
+// Apparently it does not
+// #define IGNORE_MOD_TAP_INTERRUPT_PER_KEY
 
+// Maybe IGNORE_MOD_TAP_INTERRUPT will fix ALT_T(KC_SPC)?
+// https://docs.qmk.fm/#/tap_hold?id=ignore-mod-tap-interrupt
+#define IGNORE_MOD_TAP_INTERRUPT
 #define TAPPING_TERM 200
 
 #ifdef RGBLIGHT_ENABLE
